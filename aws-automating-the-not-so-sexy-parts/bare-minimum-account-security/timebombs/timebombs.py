@@ -31,7 +31,6 @@ print('snapshots')
 response = client.describe_snapshots(
     OwnerIds = [customer_id]
 )
-
 for snapshot in response['Snapshots']:
     if 'Tags' not in snapshot:
         print(snapshot['SnapshotId'])
@@ -57,7 +56,21 @@ for cluster in response['CacheClusters']:
         tags = [cluster['TagList'][0]['Key'] for key, value in cluster['TagList']]
         if TIMEBOMB not in tags:
             print(cluster['CacheClusterId'])
+
 print('snapshots')
+response = client.describe_snapshots()
+for snapshot in response['Snapshots']:
+    arn = 'arn:aws:elasticache:%s:%s:snapshot:%s' % (snapshot['PreferredAvailabilityZone'][:-1], customer_id, snapshot['SnapshotName'])
+    response = client.list_tags_for_resource(
+        ResourceName=arn
+    )
+    if len(response['TagList']) == 0:
+        print(snapshot['SnapshotName'])
+    else:
+        tags = [snapshot['TagList'][0]['Key'] for key, value in snapshot['TagList']]
+        if TIMEBOMB not in tags:
+            print(snapshot['SnapshotName'])
+
 
 print('TO-DO')
 print('Amazon Elastic Compute Cloud (Amazon EC2)')
