@@ -1,0 +1,4 @@
+- every zone has a trail
+- improvements:
+    - no trail, setup
+    - monitor with lambda to turn back on
