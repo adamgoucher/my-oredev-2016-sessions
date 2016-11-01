@@ -10,3 +10,5 @@ AWS suggests the following steps to rotate keys (which you really should practic
 - Change the state of the previous access key to inactive.
 - Validate that your applications are still working as expected.
 - Delete the inactive access key.
+
+Note: AWS doesn't suggest how often you rotate keys. Its up to you to assess your risks and set it accordingly.

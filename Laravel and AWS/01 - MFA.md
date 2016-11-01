@@ -39,3 +39,5 @@ for user in users["Users"]:
 
     print("%s: %s" %(user_name, has_device))
 ```
+
+Note: If you lose your root MFA, its going to require a conversation with AWS to resolve it as they have to disable it on your account.
