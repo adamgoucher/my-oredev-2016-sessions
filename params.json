@@ -1,0 +1,6 @@
+{
+  "name": "My-oredev-2016-sessions",
+  "tagline": "",
+  "body": "# Oredev 2016\r\nI was fortunate enough to get selected to go back to [Oredev](http://oredev.org/2016) for a second time this year. Rather than do fancy slidedecks, I've got a bunch of code examples and such that can live on and be useful without me in front of them. (I know, crazy!)\r\n\r\n## [Laravel and AWS](Laravel and AWS/README.md)\r\nAt [MobileXCo](https://mobilexco.com) we run all our Laravel apps in AWS. This is the talk I wish I had seen when I started rolling stuff out 2 years ago.\r\n\r\n## [AWS - Automating the Not-So-Sexy Parts](AWS - Automating the Not-So-Sexy Parts/README.md)\r\nLet's face it, spinning up instances and such is fun, but there are a lot of boring parts about successfully running any infrastructure let alone one in a cloud you don't control. This talk is a peak into my toolbox of useful scripts (the inevitably all got written as the result of me screwing something up)\r\n",
+  "note": "Don't delete this file! It's used internally to help with page regeneration."
+}
