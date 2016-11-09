@@ -1,6 +1,8 @@
 import boto3
+import sys
 
 TIMEBOMB = 'timebomb'
+failures = 0
 
 iam = boto3.resource('iam')
 current_user = iam.CurrentUser()
@@ -21,10 +23,12 @@ print('volumes')
 response = client.describe_volumes()
 for volume in response['Volumes']:
     if 'Tags' not in volume:
+        failures += 1
         print(volume['VolumeId'])
     else:
         tags = [volume['Tags'][0]['Key'] for key, value in volume['Tags']]
         if TIMEBOMB not in tags:
+            failures += 1
             print(volume['VolumeId'])
 
 print('snapshots')
@@ -33,12 +37,13 @@ response = client.describe_snapshots(
 )
 for snapshot in response['Snapshots']:
     if 'Tags' not in snapshot:
+        failures += 1
         print(snapshot['SnapshotId'])
     else:
         tags = [snapshot['Tags'][0]['Key'] for key, value in snapshot['Tags']]
         if TIMEBOMB not in tags:
+            failures += 1
             print(snapshot['SnapshotId'])
-
 
 print('Amazon ElastiCache (ElastiCache)')
 client = boto3.client('elasticache')
@@ -51,10 +56,12 @@ for cluster in response['CacheClusters']:
         ResourceName=arn
     )
     if len(response['TagList']) == 0:
+        failures += 1
         print(cluster['CacheClusterId'])
     else:
         tags = [cluster['TagList'][0]['Key'] for key, value in cluster['TagList']]
         if TIMEBOMB not in tags:
+            failures += 1
             print(cluster['CacheClusterId'])
 
 print('snapshots')
@@ -65,10 +72,12 @@ for snapshot in response['Snapshots']:
         ResourceName=arn
     )
     if len(response['TagList']) == 0:
+        failures += 1
         print(snapshot['SnapshotName'])
     else:
         tags = [snapshot['TagList'][0]['Key'] for key, value in snapshot['TagList']]
         if TIMEBOMB not in tags:
+            failures += 1
             print(snapshot['SnapshotName'])
 
 
@@ -86,3 +95,5 @@ print('Amazon Virtual Private Cloud (Amazon VPC)')
 print('Auto Scaling')
 print('AWS CloudFormation')
 print('AWS Elastic Beanstalk')
+
+sys.exit(failures)

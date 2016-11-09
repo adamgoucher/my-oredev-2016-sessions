@@ -1,6 +1,8 @@
 import boto3
+import sys
 
 maintenance_window = 'sun:09:35-sun:10:35'
+changed = 0
 
 # rds can have maintenance windows
 update_rds = False
@@ -21,6 +23,7 @@ if update_rds == True:
                     DBInstanceIdentifier=instance['DBInstanceIdentifier'],
                     PreferredMaintenanceWindow=maintenance_window
                 )
+                changed += 1
     paginator = rds.get_paginator('describe_db_instances')
     for response_iterator in paginator.paginate():
         print('Adjusted RDS Maintenance Windows')
@@ -46,8 +49,11 @@ if update_ec == True:
                     CacheClusterId=instance['CacheClusterId'],
                     PreferredMaintenanceWindow=maintenance_window
                 )
+                changed += 1
     paginator = ec.get_paginator('describe_cache_clusters')
     for response_iterator in paginator.paginate():
         print('Adjusted ElastiCache Maintenance Windows')
         for instance in response_iterator['CacheClusters']:
             print('%s: %s UTC' % (instance['CacheClusterId'], instance['PreferredMaintenanceWindow']))
+
+sys.exit(changed)
