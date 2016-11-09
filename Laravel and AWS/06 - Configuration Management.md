@@ -257,3 +257,5 @@ class profiles::laravel {
   python::pip { 'awscli': }
 }
 ```
+
+Credit to the folks at [Unif.io](https://unif.io/) for the /etc/default trick 
