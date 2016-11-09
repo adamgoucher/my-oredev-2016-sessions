@@ -19,4 +19,8 @@ for region in regions:
 
 You can go one step further and setup AWS SNS to report to AWS Lambda that AWS CloudTrail was disabled and immediately enable it.
 
+You can enable CloudTrail to roll up all regions into a single one so you only have to configure it once, but I
+* didn't like seeing them multiplexed
+* the region it rolls up into us US-EAST-1 which isn't convenient if you spend your days in a different region
+
 (And send you an SMS alerting you.)
