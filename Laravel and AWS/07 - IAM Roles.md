@@ -43,4 +43,4 @@ Here is a Role that is in place on our build server to create AWS CodeDeploy pac
 }
 ```
 
-
+/Note/ - You cannot add a role to an existing EC2 instance -- only when it is created so its better to add an empty role now than have to re-provision an instance later.
