@@ -22,3 +22,5 @@ At [MobileXCo](https://mobilexco.com) we run all our Laravel apps in AWS. This i
 11. [SES](11 - SES.md)
 12. [EFS](12 - EFS.md)
 13. [Security Groups](13 - Security Groups.md)
+14. [VPC Flow Logs](14 - VPC Flow Logs.md)
+15. [Route 53 for Private DNS](15 - Route 53 for Private DNS.md)
