@@ -6,7 +6,14 @@
 - Fun: Roller Derby Referee
 
 ## TLDR
-The more you use AWS, the more you realise there are either bits of information you need to know frequently or there isn't a nice way to get an aggregate view of and so you build your toolbox of scripts that you run. There are entire startups around these things, but with some patience and python you can answer almost any question.
+The more you use AWS, the more you realise there are either bits of information you need to know frequently or there isn't a nice way to get an aggregate view of and so you build your toolbox of scripts that you run. There are entire startups around these things, but with some patience and python you can answer almost any question. This is a[n unedited] peek into my toolbox.
+
+## Rules for not-so-sexy scripts
+- should be able to run on a scheduled manner
+- should have a distinct pass/fail criteria
+- looking at the output should tell you the state of the world
+- ugly code that provides information is good code
+- if cloudwatch or similar (from AWS) can tell you something, let it
 
 ## The scripts
 - [Bare Minimum] Account Security
@@ -20,12 +27,6 @@ The more you use AWS, the more you realise there are either bits of information 
 - [Domains](domains/expiring_at.py) - know when your domains are going to expire
 - [New CodeDeploy Version?](codedeploy/new_version.md) - I disable CodeDeploy auto-update, but want to know when I [cs]hould update
 - [Can I haz?](codecommit/yesnope.py) - When you really want to use something that isn't in your Region yet
-
-## Rules for not-so-sexy scripts
-- should be able to run on a scheduled manner
-- should have a distinct pass/fail criteria
-- looking at the output should tell you the state of the world
-- ugly code that provides information is good code
 
 ## Parts of a (Python) not-so-sexy script
 1. import the boto3 module
@@ -57,6 +58,12 @@ The more you use AWS, the more you realise there are either bits of information 
   sys.exit(failures)
   ```
 
+## Tips
+- Have the [docs](http://boto3.readthedocs.io/en/latest) open in another window
 
 ## Things that will confuse
-- Client vs. Resource: Near as I can tell, a Client is a lower level of abstraction for AWS services than a Resource. They can be used intermixed. Resources are 'objects' whereas client function calls return dictionaries.
+- Client vs. Resource: Near as I can tell, a Client is a lower level of abstraction for AWS services than a Resource.
+    - They can be used intermixed.
+    - Resources are 'objects' whereas client function calls return dictionaries.
+    - Everything can be done via the client
+
