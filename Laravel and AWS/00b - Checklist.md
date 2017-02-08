@@ -22,3 +22,6 @@
 - [ ] [Security Groups](13 - Security Groups.md)
 - [ ] [VPC Flow Logs](14 - VPC Flow Logs.md)
 - [ ] [Route 53 for Private DNS](15 - Route 53 for Private DNS.md)
+- [ ] [CodeBuild as a Jenkins replacement](16 - CodeBuild.md)
+- [ ] [Dealing with Logs](17 - Logs.md)
+- [ ] [Caching](18 - Caching.md)

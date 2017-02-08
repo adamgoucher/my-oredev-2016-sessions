@@ -1,6 +1,6 @@
 # Configuration Management
 
-/Heuristic/ - Without Configuration Management, you don't have infrastucture you have a garden of special snowflakes.
+*Heuristic* - Without Configuration Management, you don't have infrastucture you have a garden of special snowflakes.
 
 How you initially configure and maintain the configuration of your instances is largely dependent on whether or your you use ASG or not. If you don't then using a centralized server (Puppet, Chef) makes sense, but if you are using ASG then keeping track of certificates on machines that can appear and disappear is a pain so something like Ansible or Masterless Puppet is more relevant. Switching approaches, even from just classic Puppet to masterless Puppet, midstream is a pain.
 
@@ -17,7 +17,7 @@ packages:
 
 environment:
     MXCO_ENVIRONMENT: humans
-    MXCO_ROLE: contests
+    MXCO_ROLE: right
 
 bootcmd:
 - mkdir -p /root/.ssh
@@ -55,7 +55,7 @@ write_files:
     permissions: "0744"
 -   content: |
         #!/usr/bin/env bash
-
+        
         source /etc/default/mobilexco
         export NAME=$MXCO_ENVIRONMENT-`curl -s http://169.254.169.254/latest/meta-data/instance-id | tr -d 'i-'`
         /usr/bin/hostnamectl set-hostname $NAME
@@ -65,19 +65,42 @@ write_files:
     permissions: "0744"
 -   content: |
         -----BEGIN RSA PRIVATE KEY-----
-        <certificate content>
+        YOUR_KEY_HERE
         -----END RSA PRIVATE KEY----- 
-    path: /root/.ssh/id_rsa-oredev
+    path: /root/.ssh/id_rsa-headless
     owner: root:root
     permissions: "0400"
+-   content: |
+      #!/usr/bin/env bash
 
+      INSTANCE_ID=`curl -s http://169.254.169.254/latest/meta-data/instance-id`
+      aws autoscaling complete-lifecycle-action --region us-west-2 --lifecycle-action-result CONTINUE --instance-id $INSTANCE_ID --lifecycle-hook-name slowstart --auto-scaling-group-name humans-right
+    path: /usr/local/bin/asg-continue
+    owner: root:root
+    permissions: "0744"
+-   content: |
+      bitbucket.org,104.192.143.1 ssh-rsa AAAAB3NzaC1yc2EAAAABIwAAAQEAubiN81eDcafrgMeLzaFPsw2kNvEcqTKl/VqLat/MaB33pZy0y3rJZtnqwR2qOOvbwKZYKiEO1O6VqNEBxKvJJelCq0dTXWT5pbO2gDXC6h6QDXCaHo6pOHGPUy+YBaGQRGuSusMEASYiWunYN0vCAI8QaXnWMXNMdFP3jHAJH0eDsoiGnLPBlBp4TNm6rYI74nMzgz3B9IikW4WVK+dc8KZJZWYjAuORU3jc1c/NPskD2ASinf8v3xnfXeukU0sJ5N6m5E8VLjObPEO+mN2t/FZTMZLiFqPWc/ALSqnMnnhwrNi2rbfg/rd/IpL8Le3pSBne8+seeFVBoGqzHM9yXw==
+    path: /root/.ssh/known_hosts
+    owner: root:root
+    permissions: "0644"
+-   content: |
+      #!/usr/bin/env bash
+
+      cd /root/headless
+      source /etc/default/mobilexco
+      /opt/puppetlabs/bin/puppet apply --modulepath=/root/headless/code/modules --codedir /root/headless/code --environment $MXCO_ENVIRONMENT --confdir /root/headless/puppet code/environments/$MXCO_ENVIRONMENT/manifests/$MXCO_ROLE.pp
+      /opt/puppetlabs/bin/puppet apply --modulepath=/root/headless/code/modules --codedir /root/headless/code --environment $MXCO_ENVIRONMENT --confdir /root/headless/puppet code/environments/$MXCO_ENVIRONMENT/manifests/$MXCO_ROLE.pp
+    path: /usr/local/bin/headless
+    owner: root:root
+    permissions: "0744"
 runcmd:
 - /usr/local/bin/set-mobilexco-defaults
 - /usr/local/bin/set-hostname-from-instance-details
-- ssh-keyscan bitbucket.org > /root/.ssh/known_hosts
-- cd /root && ssh-agent bash -c 'ssh-add /root/.ssh/id_rsa-oredev; git clone git@bitbucket.org:mobilexco/oredev.git'
-- cd /root/oredev &&  bash -c 'source /etc/default/mobilexco && /opt/puppetlabs/bin/puppet apply --modulepath=/root/oredev/code/modules --codedir /root/ordev/code --environment $MXCO_ENVIRONMENT --confdir /root/oredev/puppet  code/environments/$MXCO_ENVIRONMENT/manifests/$MXCO_ROLE.pp'
+- cd /root && ssh-agent bash -c 'ssh-add /root/.ssh/id_rsa-headless; git clone git@bitbucket.org:mobilexco/headless.git'
+- /usr/local/bin/headless
+- apt-get update; apt-get upgrade -y
 - systemctl enable apt-daily.service
+- /usr/local/bin/asg-continue
 
 output : { all : '| tee -a /var/log/cloud-init-output.log' }
 ```
@@ -89,6 +112,8 @@ Note: This is for a custom AMI based on Canonical's official Ubuntu 16.04 image 
 Note: This means you are now now reliant on both AWS and Bitbucket (or GitHub) for your infrastructure to be able to come up -- as I learned the hard way when Atlassian has an outage
 
 Note: Eventually there will be another line to put a git pull and puppet apply into cron and have it run every 15 minutes
+
+Note: It takes around 8 minutes for a machine to come up. This can cause problems with CodeBuild and ASG Lifecycle timeouts. I'm considering having machine images built periodically so they are ready to spin up. That's still in the 'think about' phase.
 
 We use a variation of the Role/Profile pattern where each ASG is a role / business name ('Humans - Left Node') and those Roles are built by multiple Profiles ('Ubuntu, Contests, Surveys').
 

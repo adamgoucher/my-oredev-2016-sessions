@@ -1,6 +1,6 @@
 # CloudTrail
 
-/Rule/ - Every AWS Region should have CloudTrail enabled
+*Rule* - Every AWS Region should have CloudTrail enabled
 
 AWS CloudTrail records every API call within your account and can be critical for tracking down security problems. Unfortunately it doesn't get turned on by default for a region. This script will list every AWS Region and whether or not it is configured or not.
 
@@ -19,8 +19,8 @@ for region in regions:
 
 You can go one step further and setup AWS SNS to report to AWS Lambda that AWS CloudTrail was disabled and immediately enable it.
 
-You can enable CloudTrail to roll up all regions into a single one so you only have to configure it once, but I
-* didn't like seeing them multiplexed
-* the region it rolls up into us US-EAST-1 which isn't convenient if you spend your days in a different region
-
 (And send you an SMS alerting you.)
+
+You can enable CloudTrail to roll up all regions into a single one so you only have to configure it once, but I
+- didn't like seeing them multiplexed
+- the region it rolls up into us US-EAST-1 which isn't convenient if you spend your days in a different region

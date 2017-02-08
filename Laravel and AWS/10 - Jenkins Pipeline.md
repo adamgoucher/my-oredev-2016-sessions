@@ -1,6 +1,6 @@
 # Jenkins Pipeline
 
-/Heuristic/ - Don't use AWS CodeDeploy the way AWS says to use it with Jenkins -- they want you to recompile and repackage on every deployment
+*Heuristic* - Don't use AWS CodeDeploy the way AWS says to use it with Jenkins -- they want you to recompile and repackage on every deployment
 
 My delivery pipeline
 * 01-contests-build-and-package
@@ -10,7 +10,7 @@ My delivery pipeline
 
 01-contests-build-and-package is the workhorse
 - fetches code
-- writes the build number to the .env.* files which is displayed in all our footer
+- writes the build number to the .env.* files which is displayed in all our footer (Note: will break if .env.* files are not checked in with a newline at the end of them.)
 ```shell
 set +e
 
@@ -103,3 +103,5 @@ fi
 ```
 
 The other jobs then read from 05-contests-deploy-to-humans as that is our testing environment. With some Role Based permissions inside Jenkins we can control exactly what goes into which environment, by whom and can see what is there currently.
+
+Note: Since this was constructed, AWS CodeBuild has been released. If I was to do it again, I would just use it.

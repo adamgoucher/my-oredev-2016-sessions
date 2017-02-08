@@ -2,7 +2,7 @@
 
 Of course, until now, no code was actually deployed. Which, unsurprisingly is what AWS CodeDeploy takes care of via an Agent that runs on your servers and constantly phones home to see if there is anything new to deploy.
 
-CodeDeploy selects which instances to put your code on based on either Tags on the instance or an ASG. The Tags are all 'or' meaning you can end up with things in unexpected places if a tag gets misplaced. ASG is just the name of the ASG -- so if a new instance comes into the ASG, it gets the code.
+CodeDeploy selects which instances to put your code on based on either Tags on the instance or an ASG. The Tags are all 'or' meaning you can end up with things in unexpected places if a tag gets misplaced. ASG is just the name of the ASG -- so if a new instance comes into the ASG, it gets the code. (But can also fail your ASG instance provisioning if the lifecycle event it installs times out.)
 
 The guts of CodeDeploy are stored in the appspec.yml file which is in the root of your deployment package. Here is one from one of my apps.
 
